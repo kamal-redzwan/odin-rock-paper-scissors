@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+}
+
+h1 {
+  margin-bottom: 2rem;
+}
+
+main {
+  display: flex;
+  gap: 1rem;
+}
+
+button {
+  all: unset;
+  background-color: black;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.choices {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.winner {
+  margin-bottom: 2rem;
+}
+
+.result-wrapper {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}

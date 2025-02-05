@@ -4,9 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Odin - Rock Paper Scissors</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Rock Paper Scissors</h1>
+    <header>
+      <h1>Rock Paper Scissors</h1>
+    </header>
+    <main>
+      <button class="rock">Rock</button>
+      <button class="paper">Paper</button>
+      <button class="scissors">Scissors</button>
+    </main>
+    <div class="choices">
+      <p>You choose: <span class="player-choice"></span></p>
+      <p>Computer choose: <span class="computer-choice"></span></p>
+    </div>
+    <h2 class="winner"></h2>
+    <div class="result-wrapper">
+      <h2>Your score: <span class="player-result"></span></h2>
+      <h2>Computer score: <span class="computer-result"></span></h2>
+    </div>
+    <p>Best of 5 wins the game!</p>
     <script src="./script.js"></script>
   </body>
 </html>

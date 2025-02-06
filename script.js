@@ -1,12 +1,17 @@
 // [X] -  1. Remove the logic that plays exactly five rounds
 // [X] - 2. Create three buttons, one for each selection. Add an event listener to the buttons that call your playRound function with the correct playerSelection every time a button is clicked.
-// [ ] - 3. Add a div for displaying results and change all of your console.logs into DOM methods.
-// [ ] - 4. Display the running score, and announce a winner of the game once one player reaches 5 points.
+// [X] - 3. Add a div for displaying results and change all of your console.logs into DOM methods.
+// [X] - 4. Display the running score, and announce a winner of the game once one player reaches 5 points.
 
+const btnWrapper = document.querySelector('.button-wrapper');
 const rockBtn = document.querySelector('.rock');
 const paperBtn = document.querySelector('.paper');
 const scissorsBtn = document.querySelector('.scissors');
 
+const restartButton = document.createElement('button');
+restartButton.textContent = 'Restart Game';
+
+const choiceWrapper = document.querySelector('.choices-wrapper');
 const playerChoiceText = document.querySelector('.player-choice');
 const computerChoiceText = document.querySelector('.computer-choice');
 
@@ -16,71 +21,84 @@ const resultText = document.querySelector('.result');
 const playerResultText = document.querySelector('.player-result');
 const computerResultText = document.querySelector('.computer-result');
 
-let playerSelection;
+let gameRounds = 5;
+let playerScore = 0;
+let computerScore = 0;
 
 function capitalizeFirstLetter(val) {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
-rockBtn.addEventListener('click', function () {
-  // console.log('rock button clicked');
-  getPlayerChoice('rock');
-  playRound();
-});
+rockBtn.addEventListener('click', () => handleClick('rock'));
+paperBtn.addEventListener('click', () => handleClick('paper'));
+scissorsBtn.addEventListener('click', () => handleClick('scissors'));
 
-paperBtn.addEventListener('click', function () {
-  // console.log('paper button clicked');
-  getPlayerChoice('paper');
-  playRound();
-});
+function handleClick(playerSelection, computerSelection) {
+  getPlayerChoice(playerSelection);
+  computerSelection = getComputerChoice();
+  playRound(playerSelection, computerSelection);
+}
 
-scissorsBtn.addEventListener('click', function () {
-  // console.log('scissors button clicked');
-  getPlayerChoice('scissors');
-  playRound();
-});
+function playRound(playerSelection, computerSelection) {
+  playerChoiceText.textContent = capitalizeFirstLetter(playerSelection);
+  computerChoiceText.textContent = capitalizeFirstLetter(computerSelection);
 
-function game() {
-  let gameRounds = 1;
-  let playerScore = 0;
-  let computerScore = 0;
-
-  while (playerScore < gameRounds && computerScore < gameRounds) {
-    let result = playRound();
-
-    if (result === 'player') {
-      playerScore++;
-      playerResultText.textContent = playerScore;
-    } else if (result === 'computer') {
-      computerScore++;
-      computerResultText.textContent = computerScore;
-    }
-
-    console.log('Player Score:', playerScore);
-    console.log('Computer Score:', computerScore);
+  if (isGameOver()) {
+    return;
   }
+  checkWinner(playerSelection, computerSelection);
+  if (isGameOver()) {
+    endGame();
+  }
+}
+
+function isGameOver() {
+  return playerScore === gameRounds || computerScore === gameRounds;
+}
+
+function updateScore() {
+  playerResultText.textContent = playerScore;
+  computerResultText.textContent = computerScore;
+}
+
+function endGame() {
+  rockBtn.style.display = 'none';
+  paperBtn.style.display = 'none';
+  scissorsBtn.style.display = 'none';
+  choiceWrapper.style.display = 'none';
 
   if (playerScore === gameRounds) {
-    console.log('Congratulations! You win the game!');
-  } else {
-    console.log('Sorry, the computer wins the game.');
+    winnerText.textContent = 'Congratulations! You win the game!';
+  } else if (computerScore === gameRounds) {
+    winnerText.textContent = 'Sorry, the computer wins the game..';
   }
+  createRestartButton();
+}
+
+function createRestartButton() {
+  restartButton.style.display = 'inline';
+  btnWrapper.appendChild(restartButton);
+  restartButton.addEventListener('click', () => restartGame());
+}
+
+function restartGame() {
+  playerScore = 0;
+  computerScore = 0;
+  rockBtn.style.display = 'inline';
+  paperBtn.style.display = 'inline';
+  scissorsBtn.style.display = 'inline';
+  restartButton.style.display = 'none';
+  winnerText.textContent = '';
+  choiceWrapper.style.display = 'flex';
+  playerChoiceText.textContent = '';
+  computerChoiceText.textContent = '';
+  updateScore();
+  // location.reload();
 }
 
 function getPlayerChoice(choice) {
   playerSelection = choice;
-
-  if (
-    playerSelection === 'rock' ||
-    playerSelection === 'paper' ||
-    playerSelection === 'scissors'
-  ) {
-    // console.log('Player selection:', playerSelection);
-    return playerSelection;
-  } else {
-    console.log('Please choose either Rock, Paper, or Scissors');
-    return getPlayerChoice();
-  }
+  return playerSelection;
 }
 
 function getComputerChoice() {
@@ -94,27 +112,20 @@ function getComputerChoice() {
 function checkWinner(playerSelection, computerSelection) {
   if (playerSelection === computerSelection) {
     winnerText.textContent = "It's a tie!";
-    return 'tie';
   } else if (
     (playerSelection === 'rock' && computerSelection === 'scissors') ||
     (playerSelection === 'scissors' && computerSelection === 'paper') ||
     (playerSelection === 'paper' && computerSelection === 'rock')
   ) {
+    playerScore++;
     winnerText.textContent = 'Yay! You win this round! :D';
-    return 'player';
-  } else {
+  } else if (
+    (computerSelection === 'rock' && playerSelection === 'scissors') ||
+    (computerSelection === 'scissors' && playerSelection === 'paper') ||
+    (computerSelection === 'paper' && playerSelection === 'rock')
+  ) {
+    computerScore++;
     winnerText.textContent = 'Sorry, you lose this round.. :(';
-    return 'computer';
   }
+  updateScore();
 }
-
-function playRound() {
-  let computerSelection = getComputerChoice();
-
-  playerChoiceText.textContent = capitalizeFirstLetter(playerSelection);
-  computerChoiceText.textContent = capitalizeFirstLetter(computerSelection);
-
-  return checkWinner(playerSelection, computerSelection);
-}
-
-// game();

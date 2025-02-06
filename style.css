@@ -35,7 +35,7 @@ button:hover {
   opacity: 0.85;
 }
 
-.choices {
+.choices-wrapper {
   display: flex;
   gap: 2rem;
   margin-bottom: 2rem;

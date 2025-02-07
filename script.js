@@ -1,131 +1,169 @@
-// [X] -  1. Remove the logic that plays exactly five rounds
-// [X] - 2. Create three buttons, one for each selection. Add an event listener to the buttons that call your playRound function with the correct playerSelection every time a button is clicked.
-// [X] - 3. Add a div for displaying results and change all of your console.logs into DOM methods.
-// [X] - 4. Display the running score, and announce a winner of the game once one player reaches 5 points.
+// Get all the DOM Elements we need
+const rockButton = document.querySelector('.rock');
+const paperButton = document.querySelector('.paper');
+const scissorsButton = document.querySelector('.scissors');
+const playerChoiceDisplay = document.querySelector('.player-choice');
+const computerChoiceDisplay = document.querySelector('.computer-choice');
+const winnerDisplay = document.querySelector('.winner');
+const playerScoreDisplay = document.querySelector('.player-result');
+const computerScoreDisplay = document.querySelector('.computer-result');
+const choicesContainer = document.querySelector('.choices-wrapper');
+const buttonsContainer = document.querySelector('.button-wrapper');
 
-const btnWrapper = document.querySelector('.button-wrapper');
-const rockBtn = document.querySelector('.rock');
-const paperBtn = document.querySelector('.paper');
-const scissorsBtn = document.querySelector('.scissors');
-
+// Create a restart button and set it to be hidden initially
 const restartButton = document.createElement('button');
 restartButton.textContent = 'Restart Game';
+restartButton.style.display = 'none';
 
-const choiceWrapper = document.querySelector('.choices-wrapper');
-const playerChoiceText = document.querySelector('.player-choice');
-const computerChoiceText = document.querySelector('.computer-choice');
-
-const winnerText = document.querySelector('.winner');
-
-const resultText = document.querySelector('.result');
-const playerResultText = document.querySelector('.player-result');
-const computerResultText = document.querySelector('.computer-result');
-
-let gameRounds = 5;
+// Initialize game scores
 let playerScore = 0;
 let computerScore = 0;
 
+// Define how many points needed to win
+const POINTS_TO_WIN = 5;
+
+// Get a random choice for the computer
+function getComputerChoice() {
+  const choices = ['rock', 'paper', 'scissors'];
+  const randomNumber = Math.floor(Math.random() * 3);
+  return choices[randomNumber];
+}
+
+// Make the first letter uppercase for display
 function capitalizeFirstLetter(val) {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
-rockBtn.addEventListener('click', () => handleClick('rock'));
-paperBtn.addEventListener('click', () => handleClick('paper'));
-scissorsBtn.addEventListener('click', () => handleClick('scissors'));
-
-function handleClick(playerSelection, computerSelection) {
-  getPlayerChoice(playerSelection);
-  computerSelection = getComputerChoice();
-  playRound(playerSelection, computerSelection);
+// Show the choices made by player and computer
+function displayChoices(playerChoice, computerChoice) {
+  playerChoiceDisplay.textContent = capitalizeFirstLetter(playerChoice);
+  computerChoiceDisplay.textContent = capitalizeFirstLetter(computerChoice);
 }
 
-function playRound(playerSelection, computerSelection) {
-  playerChoiceText.textContent = capitalizeFirstLetter(playerSelection);
-  computerChoiceText.textContent = capitalizeFirstLetter(computerSelection);
+// Update the score display
+function updateScoreDisplay() {
+  playerScoreDisplay.textContent = playerScore;
+  computerScoreDisplay.textContent = computerScore;
+}
 
-  if (isGameOver()) {
+// Show who won the round and update scores
+function handleRoundResult(playerChoice, computerChoice) {
+  // Check for a tie first
+  if (playerChoice === computerChoice) {
+    winnerDisplay.textContent = "It's a tie!";
     return;
   }
-  checkWinner(playerSelection, computerSelection);
-  if (isGameOver()) {
+
+  // Check all winning conditions for the player
+  const playerWins =
+    (playerChoice === 'rock' && computerChoice === 'scissors') ||
+    (playerChoice === 'paper' && computerChoice === 'rock') ||
+    (playerChoice === 'scissors' && computerChoice === 'paper');
+
+  // Update score and display message based on who won
+  if (playerWins) {
+    playerScore++;
+    winnerDisplay.textContent = 'Yay! You win this round! :D';
+  } else {
+    computerScore++;
+    winnerDisplay.textContent = 'Sorry, you lose this round.. :(';
+  }
+
+  // Update the score display
+  updateScoreDisplay();
+
+  // Check if the game is over
+  checkForGameOver();
+}
+
+// Check if someone has won the game
+function checkForGameOver() {
+  if (playerScore === POINTS_TO_WIN || computerScore === POINTS_TO_WIN) {
     endGame();
   }
 }
 
-function isGameOver() {
-  return playerScore === gameRounds || computerScore === gameRounds;
-}
-
-function updateScore() {
-  playerResultText.textContent = playerScore;
-  computerResultText.textContent = computerScore;
-}
-
+// Handle what happens when the game ends
 function endGame() {
-  rockBtn.style.display = 'none';
-  paperBtn.style.display = 'none';
-  scissorsBtn.style.display = 'none';
-  choiceWrapper.style.display = 'none';
+  // Hide the game buttons
+  rockButton.style.display = 'none';
+  paperButton.style.display = 'none';
+  scissorsButton.style.display = 'none';
 
-  if (playerScore === gameRounds) {
-    winnerText.textContent = 'Congratulations! You win the game!';
-  } else if (computerScore === gameRounds) {
-    winnerText.textContent = 'Sorry, the computer wins the game..';
-  }
-  createRestartButton();
-}
+  // Hide the choices display
+  choicesContainer.style.display = 'none';
 
-function createRestartButton() {
+  // Show the restart button
   restartButton.style.display = 'inline';
-  btnWrapper.appendChild(restartButton);
-  restartButton.addEventListener('click', () => restartGame());
+  buttonsContainer.appendChild(restartButton);
+
+  // Show final winner message
+  if (playerScore === POINTS_TO_WIN) {
+    winnerDisplay.textContent = 'Congratulations! You win the game!';
+  } else {
+    winnerDisplay.textContent = 'Sorry, the computer wins the game..';
+  }
 }
 
-function restartGame() {
+// Reset everything to play again
+function resetGame() {
+  // Reset scores
   playerScore = 0;
   computerScore = 0;
-  rockBtn.style.display = 'inline';
-  paperBtn.style.display = 'inline';
-  scissorsBtn.style.display = 'inline';
+
+  // Update score display
+  updateScoreDisplay();
+
+  // Show game buttons again
+  rockButton.style.display = 'inline';
+  paperButton.style.display = 'inline';
+  scissorsButton.style.display = 'inline';
+
+  // Show choices container
+  choicesContainer.style.display = 'flex';
+
+  // Hide restart button
   restartButton.style.display = 'none';
-  winnerText.textContent = '';
-  choiceWrapper.style.display = 'flex';
-  playerChoiceText.textContent = '';
-  computerChoiceText.textContent = '';
-  updateScore();
-  // location.reload();
+
+  // Clear all display messages
+  winnerDisplay.textContent = '';
+  playerChoiceDisplay.textContent = '';
+  computerChoiceDisplay.textContent = '';
 }
 
-function getPlayerChoice(choice) {
-  playerSelection = choice;
-  return playerSelection;
-}
-
-function getComputerChoice() {
-  let choices = ['rock', 'paper', 'scissors'];
-  let randomChoiceIndex = Math.floor(Math.random() * 3);
-  let computerSelection = choices[randomChoiceIndex];
-  computerChoiceText.textContent = capitalizeFirstLetter(computerSelection);
-  return computerSelection;
-}
-
-function checkWinner(playerSelection, computerSelection) {
-  if (playerSelection === computerSelection) {
-    winnerText.textContent = "It's a tie!";
-  } else if (
-    (playerSelection === 'rock' && computerSelection === 'scissors') ||
-    (playerSelection === 'scissors' && computerSelection === 'paper') ||
-    (playerSelection === 'paper' && computerSelection === 'rock')
-  ) {
-    playerScore++;
-    winnerText.textContent = 'Yay! You win this round! :D';
-  } else if (
-    (computerSelection === 'rock' && playerSelection === 'scissors') ||
-    (computerSelection === 'scissors' && playerSelection === 'paper') ||
-    (computerSelection === 'paper' && playerSelection === 'rock')
-  ) {
-    computerScore++;
-    winnerText.textContent = 'Sorry, you lose this round.. :(';
+// Handle when player makes a choice
+function handlePlayerChoice(playerChoice) {
+  // Don't do anything if game is over
+  if (playerScore === POINTS_TO_WIN || computerScore === POINTS_TO_WIN) {
+    return;
   }
-  updateScore();
+
+  // Get computer's choice
+  const computerChoice = getComputerChoice();
+
+  // Show both choices
+  displayChoices(playerChoice, computerChoice);
+
+  // Handle the round
+  handleRoundResult(playerChoice, computerChoice);
 }
+
+// Add click handlers to all buttons
+rockButton.addEventListener('click', function () {
+  handlePlayerChoice('rock');
+});
+
+paperButton.addEventListener('click', function () {
+  handlePlayerChoice('paper');
+});
+
+scissorsButton.addEventListener('click', function () {
+  handlePlayerChoice('scissors');
+});
+
+restartButton.addEventListener('click', function () {
+  resetGame();
+});
+
+// Initialize the score display
+updateScoreDisplay();

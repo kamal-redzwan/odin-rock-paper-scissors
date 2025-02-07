@@ -5,7 +5,7 @@
 ## Project Info
 
 Simple implementation of Rock Paper Scissors game from The Odin Project [curriculum](https://www.theodinproject.com/paths/foundations/courses/foundations/lessons/rock-paper-scissors).
-This is my first **HTML/CSS/JS** project. **Live version** of the game is [here]().
+This is my first **HTML/CSS/JS** project. **Live version** of the game is [here](https://kamal-redzwan.github.io/odin-rock-paper-scissors/).
 
 ## Description
 
@@ -22,7 +22,7 @@ The player with the most wins after 5 rounds is declared the overall winner. Enj
 - Gained experience in **manipulating element styles** using JavaScript (setting attributes, adding/removing classes, modifying inline styles and text).
 - Enhanced my **comprehension of JavaScript functions** (organization, scope management, invocation, and decomposition into smaller functions).
 
-### Summary
+## Summary
 
 - The game is **completely playable** within the browser.
 - I focused on maintaining **clean and readable code**, with **concise functions** and **clear function names** throughout the code. ✨
